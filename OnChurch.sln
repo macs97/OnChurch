@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnChurch.Common", "OnChurch.Common\OnChurch.Common.csproj", "{5F025B38-2AB0-428E-B435-A31B497EB3F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnChurch.Web", "OnChurch.Web\OnChurch.Web.csproj", "{22FF8C0A-30AC-46CD-834C-11CF83625DBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F025B38-2AB0-428E-B435-A31B497EB3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F025B38-2AB0-428E-B435-A31B497EB3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F025B38-2AB0-428E-B435-A31B497EB3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F025B38-2AB0-428E-B435-A31B497EB3F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22FF8C0A-30AC-46CD-834C-11CF83625DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22FF8C0A-30AC-46CD-834C-11CF83625DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22FF8C0A-30AC-46CD-834C-11CF83625DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22FF8C0A-30AC-46CD-834C-11CF83625DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C624B36A-DB04-457F-A017-1F1BA3DEE886}
+	EndGlobalSection
+EndGlobal
