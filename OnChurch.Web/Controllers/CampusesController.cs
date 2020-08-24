@@ -19,7 +19,9 @@ namespace OnChurch.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Campuses.ToListAsync());
+            return View(await _context.Campuses
+                .Include(c => c.Sections)
+                .ToListAsync());
         }
 
         // GET: Campuses/Details/5
@@ -31,6 +33,8 @@ namespace OnChurch.Web.Controllers
             }
 
             Campus campus = await _context.Campuses
+                .Include(c => c.Sections)
+                .ThenInclude(ch => ch.Churches)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (campus == null)
             {
@@ -152,9 +156,65 @@ namespace OnChurch.Web.Controllers
         }
 
 
-        private bool CampusExists(int id)
+        public async Task<IActionResult> AddSection(int? id)
         {
-            return _context.Campuses.Any(e => e.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Campus campus = await _context.Campuses.FindAsync(id);
+            if (campus == null)
+            {
+                return NotFound();
+            }
+
+            Section model = new Section { IdCampus = campus.Id };
+            return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSection(Section section)
+        {
+            if (ModelState.IsValid)
+            {
+                Campus campus = await _context.Campuses
+                    .Include(c => c.Sections)
+                    .FirstOrDefaultAsync(c => c.Id == section.IdCampus);
+                if (campus == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    section.Id = 0;
+                    campus.Sections.Add(section);
+                    _context.Update(campus);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction($"{nameof(Details)}/{campus.Id}");
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(section);
+        }
+
+
     }
 }
