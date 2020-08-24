@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnChurch.Common.Entities
 {
@@ -29,5 +31,15 @@ namespace OnChurch.Common.Entities
         [MaxLength(50, ErrorMessage = "The field {0} must contain less than {1} characteres.")]
         [Required]
         public string Email { get; set; }
+
+        public Profession Profession { get; set; }
+
+        [JsonIgnore]
+        [NotMapped]
+        public int IdProfession { get; set; }
+
+        [JsonIgnore]
+        [NotMapped]
+        public int IdChurch { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnChurch.Common.Entities
 {
@@ -16,5 +18,9 @@ namespace OnChurch.Common.Entities
 
         [DisplayName("Church Number")]
         public int ChurchesNumber => Churches == null ? 0 : Churches.Count;
+
+        [JsonIgnore]
+        [NotMapped]
+        public int IdCampus { get; set; }
     }
 }

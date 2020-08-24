@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnChurch.Common.Entities
 {
@@ -13,6 +15,8 @@ namespace OnChurch.Common.Entities
 
         public ICollection<Member> Members { get; set; }
 
-        public Profession Profession { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public int IdSection { get; set; }
     }
 }
