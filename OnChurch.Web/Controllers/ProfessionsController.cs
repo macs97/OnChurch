@@ -1,62 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
-using OnChurch.Web.Helpers;
-using OnChurch.Web.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
 {
-    public class MembersController : Controller
+    public class ProfessionsController : Controller
     {
         private readonly DataContext _context;
-        private readonly IBlobHelper _blobHelper;
-        private readonly IConverterHelper _converterHelper;
-        private readonly ICombosHelper _combosHelper;
 
-        public MembersController(DataContext context, IBlobHelper blobHelper, IConverterHelper converterHelper, ICombosHelper combosHelper)
+        public ProfessionsController(DataContext context)
         {
             _context = context;
-            _blobHelper = blobHelper;
-            _converterHelper = converterHelper;
-            _combosHelper = combosHelper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Members
-                .Include(m => m.Profession)
-                .ToListAsync());
+            return View(await _context.Professions.ToListAsync());
         }
+
 
         public IActionResult Create()
         {
-            MemberViewModel model = new MemberViewModel
-            {
-                Professions = _combosHelper.GetComboProfessions()
-            };
-            return View(model);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MemberViewModel model)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Profession profession)
         {
             if (ModelState.IsValid)
             {
-                Guid imageId = Guid.Empty;
-
-                if (model.PhotoId != null)
-                {
-                    imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
-                }
-
                 try
                 {
-                    Member member = await _converterHelper.ToMemberAsync(model, imageId, true);
-                    _context.Add(member);
+                    _context.Add(profession);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -76,8 +58,7 @@ namespace OnChurch.Web.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            model.Professions = _combosHelper.GetComboProfessions();
-            return View(model);
+            return View(profession);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -87,36 +68,30 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Members.FindAsync(id);
-            if (member == null)
+            var profession = await _context.Professions.FindAsync(id);
+            if (profession == null)
+            {
+                return NotFound();
+            }
+            return View(profession);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Profession profession)
+        {
+            if (id != profession.Id)
             {
                 return NotFound();
             }
 
-            MemberViewModel model = _converterHelper.toMemberViewModel(member);
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(MemberViewModel model)
-        {
             if (ModelState.IsValid)
             {
-                Guid imageId = model.PhotoId;
-
-                if (model.PhotoId != null)
-                {
-                    imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
-                }
-
                 try
                 {
-                    Member member = await _converterHelper.ToMemberAsync(model, imageId, false);
-                    _context.Update(member);
+                    _context.Update(profession);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -134,8 +109,7 @@ namespace OnChurch.Web.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-
-            return View(model);
+            return View(profession);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -145,16 +119,16 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Members
+            var profession = await _context.Professions
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (member == null)
+            if (profession == null)
             {
                 return NotFound();
             }
 
             try
             {
-                _context.Members.Remove(member);
+                _context.Professions.Remove(profession);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -164,6 +138,5 @@ namespace OnChurch.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

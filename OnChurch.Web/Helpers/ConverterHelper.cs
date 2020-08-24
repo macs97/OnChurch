@@ -1,12 +1,21 @@
 ﻿using OnChurch.Common.Entities;
+using OnChurch.Web.Data;
 using OnChurch.Web.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace OnChurch.Web.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        public Member ToMember(MemberViewModel model, Guid photoId, bool isNew)
+        private readonly DataContext _context;
+        private readonly ICombosHelper _combosHelper;
+        public ConverterHelper(DataContext context, ICombosHelper combosHelper)
+        {
+            _context = context;
+            _combosHelper = combosHelper;
+        }
+        public async Task<Member> ToMemberAsync(MemberViewModel model, Guid photoId, bool isNew)
         {
             return new Member
             {
@@ -18,7 +27,7 @@ namespace OnChurch.Web.Helpers
                 Email = model.Email,
                 Phone = model.Phone,
                 PhotoId = photoId,
-                Profession = model.Profession
+                Profession = await _context.Professions.FindAsync(model.ProfessionId)
             };
         }
 
@@ -34,8 +43,11 @@ namespace OnChurch.Web.Helpers
                 Email = member.Email,
                 Phone = member.Phone,
                 PhotoId = member.PhotoId,
-                Profession = member.Profession
+                Profession = member.Profession,
+                ProfessionId = member.IdProfession,
+                Professions = _combosHelper.GetComboProfessions()
             };
         }
+
     }
 }
