@@ -40,6 +40,25 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Member member = await _context.Members
+                .Include(m => m.Profession)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            return View(member);
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MemberViewModel model)
@@ -87,7 +106,10 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Members.FindAsync(id);
+            Member member = await _context.Members
+                .Include(m => m.Profession)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            member.IdProfession = member.Profession.Id;
             if (member == null)
             {
                 return NotFound();
@@ -103,15 +125,15 @@ namespace OnChurch.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Guid imageId = model.PhotoId;
-
-                if (model.PhotoId != null)
-                {
-                    imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
-                }
 
                 try
                 {
+                    Guid imageId = model.PhotoId;
+
+                    if (model.PhotoFile != null)
+                    {
+                        imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
+                    }
                     Member member = await _converterHelper.ToMemberAsync(model, imageId, false);
                     _context.Update(member);
                     await _context.SaveChangesAsync();
@@ -134,7 +156,7 @@ namespace OnChurch.Web.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-
+            model.Professions = _combosHelper.GetComboProfessions();
             return View(model);
         }
 

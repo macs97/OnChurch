@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
 
@@ -119,22 +120,36 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            var profession = await _context.Professions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profession == null)
-            {
-                return NotFound();
-            }
+            var member = await _context.Members
+                .Include(m => m.Profession)
+                .FirstOrDefaultAsync(m => m.Profession.Id == id);
 
-            try
+            if(member == null)
             {
-                _context.Professions.Remove(profession);
-                await _context.SaveChangesAsync();
+                var profession = await _context.Professions
+                .FirstOrDefaultAsync(p => p.Id == id);
+                if (profession == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    _context.Professions.Remove(profession);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
-            catch (Exception ex)
+            else 
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                // TODO
+                ModelState.AddModelError(string.Empty, "This record have to one or more members asociated");
             }
+                
+            
 
             return RedirectToAction(nameof(Index));
         }
