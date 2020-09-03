@@ -1,0 +1,57 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using OnChurch.Common.Entities;
+using OnChurch.Common.Enum;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace OnChurch.Web.Data.Entities
+{
+    public class Member : IdentityUser
+    {
+        [MaxLength(20)]
+        [Required]
+        public string Document { get; set; }
+
+        [Display(Name = "First Name")]
+        [MaxLength(50)]
+        [Required]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        [MaxLength(50)]
+        [Required]
+        public string LastName { get; set; }
+
+        [MaxLength(100)]
+        public string Address { get; set; }
+
+        [Display(Name = "Photograph")]
+        public Guid PhotoId { get; set; }
+
+        [Display(Name = "Photograph")]
+        public string PhotoFullPath => PhotoId == Guid.Empty
+        ? $"https://localhost:44390/images/noimage.png"
+        : $"https://onchurch.blob.core.windows.net/members/{PhotoId}";
+
+        [Display(Name = "User Type")]
+        public UserType UserType { get; set; }
+
+        public Church Church { get; set; }
+
+        public Profession Profession { get; set; }
+
+        [JsonIgnore]
+        [NotMapped]
+        public int IdProfession { get; set; }
+
+
+        [Display(Name = "Member")]
+        public string FullName => $"{FirstName} {LastName}";
+
+        [Display(Name = "Member")]
+        public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
+    }
+
+}

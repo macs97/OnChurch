@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnChurch.Web.Data;
 
 namespace OnChurch.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200825093158_AddUserEntityAndRemoveMember")]
+    partial class AddUserEntityAndRemoveMember
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,7 +192,7 @@ namespace OnChurch.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CampusId1");
+                    b.Property<int?>("CampusId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -198,7 +200,7 @@ namespace OnChurch.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CampusId1");
+                    b.HasIndex("CampusId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -249,6 +251,10 @@ namespace OnChurch.Web.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.Property<string>("PhoneNumber");
 
@@ -340,7 +346,7 @@ namespace OnChurch.Web.Migrations
                 {
                     b.HasOne("OnChurch.Common.Entities.Campus")
                         .WithMany("Sections")
-                        .HasForeignKey("CampusId1");
+                        .HasForeignKey("CampusId");
                 });
 
             modelBuilder.Entity("OnChurch.Web.Data.Entities.Member", b =>

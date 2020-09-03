@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+using OnChurch.Common.Entities;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnChurch.Web.Helpers
@@ -9,6 +8,13 @@ namespace OnChurch.Web.Helpers
     public interface ICombosHelper
     {
         IEnumerable<SelectListItem> GetComboProfessions();
+
+        IEnumerable<SelectListItem> GetComboCampus();
+
+        IEnumerable<SelectListItem> GetComboSection(int campusId);
+
+        IEnumerable<SelectListItem> GetComboChurch(int sectionId);
+
     }
 
 }

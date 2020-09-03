@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnChurch.Common.Entities;
+using OnChurch.Common.Enum;
 using OnChurch.Web.Data;
+using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using OnChurch.Web.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
@@ -15,53 +18,39 @@ namespace OnChurch.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly ICombosHelper _combosHelper;
+        private readonly IUserHelper _userHelper;
 
-        public MembersController(DataContext context, IBlobHelper blobHelper, IConverterHelper converterHelper, ICombosHelper combosHelper)
+        public MembersController(DataContext context, IBlobHelper blobHelper, IConverterHelper converterHelper, IUserHelper userHelper, ICombosHelper combosHelper)
         {
             _context = context;
             _blobHelper = blobHelper;
             _converterHelper = converterHelper;
             _combosHelper = combosHelper;
+            _userHelper = userHelper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Members
+            return View(await _context.Users
                 .Include(m => m.Profession)
                 .ToListAsync());
         }
 
         public IActionResult Create()
         {
-            MemberViewModel model = new MemberViewModel
+            AddMemberViewModel model = new AddMemberViewModel
             {
-                Professions = _combosHelper.GetComboProfessions()
+                Professions = _combosHelper.GetComboProfessions(),
+                Campuses = _combosHelper.GetComboCampus(),
+                Sections = _combosHelper.GetComboSection(0),
+                Churches = _combosHelper.GetComboChurch(0)
             };
             return View(model);
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Member member = await _context.Members
-                .Include(m => m.Profession)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (member == null)
-            {
-                return NotFound();
-            }
-
-            return View(member);
-        }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MemberViewModel model)
+        public async Task<IActionResult> Create(AddMemberViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -74,8 +63,8 @@ namespace OnChurch.Web.Controllers
 
                 try
                 {
-                    Member member = await _converterHelper.ToMemberAsync(model, imageId, true);
-                    _context.Add(member);
+                    Member member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
+                    //_context.Add(member);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -99,29 +88,60 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Member member = await _context.Members
+            Member member = await _context.Users
                 .Include(m => m.Profession)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            member.IdProfession = member.Profession.Id;
+            member.Id = id;
             if (member == null)
             {
                 return NotFound();
             }
 
-            MemberViewModel model = _converterHelper.toMemberViewModel(member);
+            return View(member);
+        }
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Member member = await _context.Users
+                .Include(m => m.Profession)
+                .Include(m => m.Church)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            member.IdProfession = member.Profession.Id;
+
+            Church section = await _context.Churches.FirstOrDefaultAsync();
+            //var section = await _context.Sections.FirstOrDefaultAsync(s => s.Id == church.IdSection);
+            //var campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Id == section.CampusId);
+
+            /*Campus campus = await _context.Campuses.Include(c => c.Sections)
+                .ThenInclude(s => s.Churches)*/
+
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            EditMemberViewModel model = _converterHelper.toMemberViewModel(member);
+            //var section = await _context.Sections.FirstOrDefaultAsync(s => s.Id == model.Church.IdSection);
+            /*var campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Id == section.CampusId);
+            model.SectionId = section.Id;
+            model.CampusId = campus.Id;*/
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(MemberViewModel model)
+        public async Task<IActionResult> Edit(EditMemberViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -160,14 +180,14 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Member member = await _context.Members
+            Member member = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (member == null)
             {
@@ -176,7 +196,7 @@ namespace OnChurch.Web.Controllers
 
             try
             {
-                _context.Members.Remove(member);
+                _context.Users.Remove(member);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -187,5 +207,19 @@ namespace OnChurch.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<JsonResult> GetSectionsAsync(int campusId)
+        {
+
+            Campus campus = await _context.Campuses.Include(c => c.Sections).FirstOrDefaultAsync(c => c.Id == campusId);
+            return Json(campus.Sections.OrderBy(s => s.Name));
+        }
+
+        public async Task<JsonResult> GetChurchsAsync(int sectionId)
+        {
+            Section section = await _context.Sections
+                .Include(s => s.Churches)
+                .FirstOrDefaultAsync(s => s.Id == sectionId);
+            return Json(section.Churches.OrderBy(s => s.Name));
+        }
     }
 }

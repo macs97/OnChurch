@@ -1,5 +1,5 @@
-﻿using OnChurch.Common.Entities;
-using OnChurch.Web.Data;
+﻿using OnChurch.Web.Data;
+using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Models;
 using System;
 using System.Threading.Tasks;
@@ -15,25 +15,25 @@ namespace OnChurch.Web.Helpers
             _context = context;
             _combosHelper = combosHelper;
         }
-        public async Task<Member> ToMemberAsync(MemberViewModel model, Guid photoId, bool isNew)
+        public async Task<Member> ToMemberAsync(EditMemberViewModel model, Guid photoId, bool isNew)
         {
             return new Member
             {
-                Id = isNew ? 0 : model.Id,
+                Id = isNew ? "" : model.Id,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Address = model.Address,
                 Document = model.Document,
                 Email = model.Email,
-                Phone = model.Phone,
+                PhoneNumber = model.PhoneNumber,
                 PhotoId = photoId,
                 Profession = await _context.Professions.FindAsync(model.ProfessionId)
             };
         }
 
-        public MemberViewModel toMemberViewModel(Member member)
+        public EditMemberViewModel toMemberViewModel(Member member)
         {
-            return new MemberViewModel
+            return new EditMemberViewModel
             {
                 Id = member.Id,
                 FirstName = member.FirstName,
@@ -41,11 +41,14 @@ namespace OnChurch.Web.Helpers
                 Address = member.Address,
                 Document = member.Document,
                 Email = member.Email,
-                Phone = member.Phone,
+                PhoneNumber = member.PhoneNumber,
                 PhotoId = member.PhotoId,
                 Profession = member.Profession,
                 ProfessionId = member.IdProfession,
-                Professions = _combosHelper.GetComboProfessions()
+                Professions = _combosHelper.GetComboProfessions(),
+                Church = member.Church,
+                Churches = _combosHelper.GetComboChurch(member.Church.IdSection),
+                ChurchId = member.Church.Id,
             };
         }
 

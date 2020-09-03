@@ -12,13 +12,13 @@
     <div class="col-md-4">
         <form asp-action="AddSection">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdCampus" />
+            <input type="hidden" asp-for="CampusId" />
 
             <partial name="_Section" />
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.IdCampus" class="btn btn-success">Back to List</a>
+                <a asp-action="Details" asp-route-id="@Model.CampusId" class="btn btn-success">Back to List</a>
             </div>
         </form>
     </div>

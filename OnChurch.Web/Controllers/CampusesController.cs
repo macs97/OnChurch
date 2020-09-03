@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CampusesController : Controller
     {
         private readonly DataContext _context;
@@ -171,7 +173,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Section model = new Section { IdCampus = campus.Id };
+            Section model = new Section { CampusId = campus.Id };
             return View(model);
         }
 
@@ -183,7 +185,7 @@ namespace OnChurch.Web.Controllers
             {
                 Campus campus = await _context.Campuses
                     .Include(c => c.Sections)
-                    .FirstOrDefaultAsync(c => c.Id == section.IdCampus);
+                    .FirstOrDefaultAsync(c => c.Id == section.CampusId);
                 if (campus == null)
                 {
                     return NotFound();
@@ -230,7 +232,7 @@ namespace OnChurch.Web.Controllers
             }
 
             Campus campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Sections.FirstOrDefault(d => d.Id == section.Id) != null);
-            section.IdCampus = campus.Id;
+            section.CampusId = campus.Id;
             return View(section);
         }
 
@@ -244,7 +246,7 @@ namespace OnChurch.Web.Controllers
                 {
                     _context.Update(section);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction($"{nameof(Details)}/{section.IdCampus}");
+                    return RedirectToAction($"{nameof(Details)}/{section.CampusId}");
 
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -303,7 +305,7 @@ namespace OnChurch.Web.Controllers
             }
 
             Campus campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Sections.FirstOrDefault(d => d.Id == section.Id) != null);
-            section.IdCampus = campus.Id;
+            section.CampusId = campus.Id;
             return View(section);
         }
 

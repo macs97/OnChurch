@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
+using System;
+using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProfessionsController : Controller
     {
         private readonly DataContext _context;
@@ -69,7 +67,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            var profession = await _context.Professions.FindAsync(id);
+            Profession profession = await _context.Professions.FindAsync(id);
             if (profession == null)
             {
                 return NotFound();
@@ -120,13 +118,13 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
+            Data.Entities.Member member = await _context.Users
                 .Include(m => m.Profession)
                 .FirstOrDefaultAsync(m => m.Profession.Id == id);
 
-            if(member == null)
+            if (member == null)
             {
-                var profession = await _context.Professions
+                Profession profession = await _context.Professions
                 .FirstOrDefaultAsync(p => p.Id == id);
                 if (profession == null)
                 {
@@ -143,13 +141,13 @@ namespace OnChurch.Web.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
-            else 
+            else
             {
                 // TODO
                 ModelState.AddModelError(string.Empty, "This record have to one or more members asociated");
             }
-                
-            
+
+
 
             return RedirectToAction(nameof(Index));
         }

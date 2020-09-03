@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnChurch.Web.Data;
 
 namespace OnChurch.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200902122719_ModifyEntities2")]
+    partial class ModifyEntities2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,7 +218,7 @@ namespace OnChurch.Web.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(100);
 
-                    b.Property<int?>("ChurchId");
+                    b.Property<int?>("ChurchId1");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -269,7 +271,7 @@ namespace OnChurch.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChurchId");
+                    b.HasIndex("ChurchId1");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -347,7 +349,7 @@ namespace OnChurch.Web.Migrations
                 {
                     b.HasOne("OnChurch.Common.Entities.Church", "Church")
                         .WithMany()
-                        .HasForeignKey("ChurchId");
+                        .HasForeignKey("ChurchId1");
 
                     b.HasOne("OnChurch.Common.Entities.Profession", "Profession")
                         .WithMany()

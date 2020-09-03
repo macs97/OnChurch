@@ -21,6 +21,6 @@ namespace OnChurch.Common.Entities
 
         [JsonIgnore]
         [NotMapped]
-        public int IdCampus { get; set; }
+        public int CampusId { get; set; }
     }
 }

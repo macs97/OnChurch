@@ -13,8 +13,6 @@ namespace OnChurch.Common.Entities
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Member> Members { get; set; }
-
         [JsonIgnore]
         [NotMapped]
         public int IdSection { get; set; }

@@ -1,4 +1,4 @@
-﻿@model OnChurch.Web.Models.MemberViewModel
+﻿@model OnChurch.Web.Models.EditMemberViewModel
 
 <div class="form-group">
     <label asp-for="FirstName" class="control-label"></label>
@@ -25,21 +25,33 @@
 </div>
 
 <div class="form-group">
-    <label asp-for="Phone" class="control-label"></label>
-    <input asp-for="Phone" class="form-control" />
-    <span asp-validation-for="Phone" class="text-danger"></span>
-</div>
-
-<div class="form-group">
-    <label asp-for="Email" class="control-label"></label>
-    <input asp-for="Email" class="form-control" />
-    <span asp-validation-for="Email" class="text-danger"></span>
+    <label asp-for="PhoneNumber" class="control-label"></label>
+    <input asp-for="PhoneNumber" class="form-control" />
+    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
 </div>
 
 <div class="form-group">
     <label asp-for="ProfessionId" class="control-label"></label>
     <select asp-for="ProfessionId" asp-items="Model.Professions" class="form-control"></select>
     <span asp-validation-for="ProfessionId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="CampusId" class="control-label"></label>
+    <select asp-for="CampusId" asp-items="Model.Campuses" class="form-control"></select>
+    <span asp-validation-for="CampusId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="SectionId" class="control-label"></label>
+    <select asp-for="SectionId" asp-items="Model.Sections" class="form-control"></select>
+    <span asp-validation-for="SectionId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="ChurchId" class="control-label"></label>
+    <select asp-for="ChurchId" asp-items="Model.Churches" class="form-control"></select>
+    <span asp-validation-for="ChurchId" class="text-danger"></span>
 </div>
 
 <div class="form-group">

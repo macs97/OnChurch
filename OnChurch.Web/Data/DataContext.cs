@@ -1,10 +1,12 @@
 ﻿
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnChurch.Common.Entities;
+using OnChurch.Web.Data.Entities;
 
 namespace OnChurch.Web.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<Member>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -16,8 +18,6 @@ namespace OnChurch.Web.Data
         public DbSet<Section> Sections { get; set; }
 
         public DbSet<Church> Churches { get; set; }
-
-        public DbSet<Member> Members { get; set; }
 
         public DbSet<Profession> Professions { get; set; }
 
