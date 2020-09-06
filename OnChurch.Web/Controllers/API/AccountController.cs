@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OnChurch.Web.Data.Entities;
@@ -9,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using OnChurch.Common.Requests;
 
 namespace OnChurch.Web.Controllers.API
 {
@@ -66,6 +69,34 @@ namespace OnChurch.Web.Controllers.API
 
             return BadRequest();
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        [Route("UpdateMember")]
+        public async Task<IActionResult> UpdateMember([FromBody] UpdateMemberRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            Member member = await _userHelper.GetMemberAsync(request.UserName);
+            if (member == null)
+            {
+                return NotFound("Error001");
+            }
+            member.Document = request.Document;
+            member.FirstName = request.FirstName;
+            member.LastName = request.LastName;
+            member.Address = request.Address;
+            member.PhoneNumber = request.PhoneNumber;
+            member.IdProfession = request.IdProfession;
+            member.Church = await _userHelper.GetChurchAsync(request.IdChurch);
+
+            await _userHelper.UpdateMemberAsync(member);
+
+            return Ok(member);
+        }
+
     }
 
 }

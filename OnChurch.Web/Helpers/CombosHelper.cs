@@ -57,8 +57,8 @@ namespace OnChurch.Web.Helpers
 
         public IEnumerable<SelectListItem> GetComboSection(int campusId)
         {
-            Campus campus = _context.Campuses.Find(campusId);
             List<SelectListItem> list = new List<SelectListItem>();
+            Campus campus = _context.Campuses.Include(c => c.Sections).FirstOrDefault(c => c.Id == campusId);
             if (campus != null)
             {
                 list = campus.Sections.Select(c => new SelectListItem
@@ -78,8 +78,8 @@ namespace OnChurch.Web.Helpers
 
         public IEnumerable<SelectListItem> GetComboChurch(int sectionId)
         {
-            var section = _context.Sections.Find(sectionId);
             List<SelectListItem> list = new List<SelectListItem>();
+            Section section = _context.Sections.Include(c => c.Churches).FirstOrDefault(s => s.Id == sectionId);
             if (section != null)
             {
                 list = section.Churches.Select(t => new SelectListItem

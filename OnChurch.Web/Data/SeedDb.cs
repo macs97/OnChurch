@@ -78,6 +78,9 @@ namespace OnChurch.Web.Data
 
                 await _userHelper.AddMemberAsync(member, "123456");
                 await _userHelper.AddMemberToRoleAsync(member, userType.ToString());
+                string token = await _userHelper.GenerateEmailConfirmationTokenAsync(member);
+                await _userHelper.ConfirmEmailAsync(member, token);
+
             }
 
             return member;

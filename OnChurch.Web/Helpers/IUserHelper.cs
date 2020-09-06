@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Models;
@@ -26,6 +27,22 @@ namespace OnChurch.Web.Helpers
         Task LogoutAsync();
 
         Task<SignInResult> ValidatePasswordAsync(Member member, string password);
+
+        Task<IdentityResult> UpdateMemberAsync(Member member);
+
+        Task<Member> GetMemberAsync(Guid memberId);
+
+        Task<IdentityResult> ChangePasswordAsync(Member member, string oldPassword, string newPassword);
+
+        Task<string> GenerateEmailConfirmationTokenAsync(Member member);
+
+        Task<IdentityResult> ConfirmEmailAsync(Member member, string token);
+
+        Task<string> GeneratePasswordResetTokenAsync(Member member);
+
+        Task<IdentityResult> ResetPasswordAsync(Member member, string token, string password);
+
+        Task<Church> GetChurchAsync(int idChurch);
 
     }
 

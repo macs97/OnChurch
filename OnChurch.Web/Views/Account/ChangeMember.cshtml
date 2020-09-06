@@ -1,0 +1,83 @@
+﻿@model OnChurch.Web.Models.EditMemberViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Member</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ChangeMember" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="PhotoId" />
+
+            <partial name="_Member" />
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="ChangePassword" class="btn btn-warning">Change Password</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <img src="@Model.PhotoFullPath" style="width:200px;height:200px;max-width: 100%; height: auto;" />
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#CampusId").change(function () {
+                $("#SectionId").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetSectionsAsync")',
+                    dataType: 'json',
+                    data: { campusId: $("#CampusId").val() },
+                    success: function (sections) {
+                        debugger;
+                        $("#SectionId").append('<option value="0">(Select a section...)</option>');
+                        $.each(sections, function (i, section) {
+                            $("#SectionId").append('<option value="'
+                                + section.id + '">'
+                                + section.name + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        console.log(ex)
+                        alert('Failed to retrieve sections.' + ex);
+                    }
+                });
+                return false;
+            })
+            $("#SectionId").change(function () {
+                $("#ChurchId").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetChurchsAsync")',
+                    dataType: 'json',
+                    data: { sectionId: $("#SectionId").val() },
+                    success: function (churchs) {
+                        debugger;
+                        $("#ChurchId").append('<option value="0">(Select a church...)</option>');
+                        $.each(churchs, function (i, church) {
+                            $("#ChurchId").append('<option value="'
+                                + church.id + '">'
+                                + church.name + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve churchs.' + ex);
+                    }
+                });
+                return false;
+            })
+        });
+    </script>
+}

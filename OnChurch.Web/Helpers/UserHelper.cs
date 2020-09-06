@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
@@ -61,7 +62,7 @@ namespace OnChurch.Web.Helpers
 
         public async Task<Member> AddMemberAsync(AddMemberViewModel model, Guid photoId, UserType userType)
         {
-           
+
             Member member = new Member
             {
                 FirstName = model.FirstName,
@@ -107,7 +108,48 @@ namespace OnChurch.Web.Helpers
             return await _signInManager.CheckPasswordSignInAsync(member, password, false);
         }
 
+        public async Task<IdentityResult> UpdateMemberAsync(Member member)
+        {
+            return await _userManager.UpdateAsync(member);
+        }
 
+        public async Task<IdentityResult> ChangePasswordAsync(Member member, string oldPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(member, oldPassword, newPassword);
+        }
+
+        public async Task<Member> GetMemberAsync(Guid memberId)
+        {
+            return await _context.Users
+                .Include(u => u.Church)
+                .FirstOrDefaultAsync(u => u.Id == memberId.ToString());
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(Member member, string token)
+        {
+            return await _userManager.ConfirmEmailAsync(member, token);
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(Member member)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(member);
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(Member member)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(member);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(Member member, string token, string password)
+        {
+            return await _userManager.ResetPasswordAsync(member, token, password);
+        }
+
+        public async Task<Church> GetChurchAsync(int idChurch)
+        {
+            return await _context.Churches
+                .FirstOrDefaultAsync(c => c.Id == idChurch);
+        }
     }
 
 }
