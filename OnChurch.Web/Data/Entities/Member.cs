@@ -32,7 +32,7 @@ namespace OnChurch.Web.Data.Entities
 
         [Display(Name = "Photograph")]
         public string PhotoFullPath => PhotoId == Guid.Empty
-        ? $"https://localhost:44390/images/noimage.png"
+        ? $"https://onchurchweb.azurewebsites.net/images/noimage.png"
         : $"https://onchurch.blob.core.windows.net/members/{PhotoId}";
 
         [Display(Name = "User Type")]
