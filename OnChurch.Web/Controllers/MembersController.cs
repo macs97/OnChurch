@@ -117,25 +117,15 @@ namespace OnChurch.Web.Controllers
                 .Include(m => m.Profession)
                 .Include(m => m.Church)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            member.IdProfession = member.Profession.Id;
-
-            Church section = await _context.Churches.FirstOrDefaultAsync();
-            //var section = await _context.Sections.FirstOrDefaultAsync(s => s.Id == church.IdSection);
-            //var campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Id == section.CampusId);
-
-            /*Campus campus = await _context.Campuses.Include(c => c.Sections)
-                .ThenInclude(s => s.Churches)*/
-
+            
             if (member == null)
             {
                 return NotFound();
             }
 
-            EditMemberViewModel model = _converterHelper.toMemberViewModel(member);
-            //var section = await _context.Sections.FirstOrDefaultAsync(s => s.Id == model.Church.IdSection);
-            /*var campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Id == section.CampusId);
-            model.SectionId = section.Id;
-            model.CampusId = campus.Id;*/
+
+
+            EditMemberViewModel model = await _converterHelper.ToMemberViewModelAsync(member);
             return View(model);
         }
 

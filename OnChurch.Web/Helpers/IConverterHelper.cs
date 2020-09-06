@@ -9,7 +9,7 @@ namespace OnChurch.Web.Helpers
     public interface IConverterHelper
     {
         Task<Member> ToMemberAsync(EditMemberViewModel model, Guid photoId, bool isNew);
-        EditMemberViewModel toMemberViewModel(Member member);
+        Task<EditMemberViewModel> ToMemberViewModelAsync(Member member);
 
     }
 }

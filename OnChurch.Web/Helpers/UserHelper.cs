@@ -102,6 +102,12 @@ namespace OnChurch.Web.Helpers
             await _signInManager.SignOutAsync();
         }
 
+        public async Task<SignInResult> ValidatePasswordAsync(Member member, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(member, password, false);
+        }
+
+
     }
 
 }

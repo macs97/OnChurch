@@ -26,17 +26,24 @@ namespace OnChurch.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Campus>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
+            modelBuilder.Entity<Campus>(campus =>
+            {
+                campus.HasIndex("Name").IsUnique();
+                campus.HasMany(c => c.Sections).WithOne(s => s.Campus).OnDelete(DeleteBehavior.Cascade);
+            });
 
-            modelBuilder.Entity<Section>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
+            modelBuilder.Entity<Section>(section =>
+            {
+                section.HasIndex("Name", "CampusId").IsUnique();
+                section.HasOne(d => d.Campus).WithMany(c => c.Sections).OnDelete(DeleteBehavior.Cascade);
+            });
 
-            modelBuilder.Entity<Profession>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
+            modelBuilder.Entity<Church>(church =>
+            {
+                church.HasIndex("Name", "IdSection").IsUnique();
+                church.HasOne(c => c.Section).WithMany(d => d.Churches).OnDelete(DeleteBehavior.Cascade);
+            });
+
         }
     }
 }

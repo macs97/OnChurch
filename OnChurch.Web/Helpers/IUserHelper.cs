@@ -25,6 +25,8 @@ namespace OnChurch.Web.Helpers
 
         Task LogoutAsync();
 
+        Task<SignInResult> ValidatePasswordAsync(Member member, string password);
+
     }
 
 }

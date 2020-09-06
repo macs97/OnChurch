@@ -49,6 +49,12 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
+
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();

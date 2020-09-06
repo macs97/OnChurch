@@ -1,7 +1,10 @@
-﻿using OnChurch.Web.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OnChurch.Common.Entities;
+using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnChurch.Web.Helpers
@@ -31,8 +34,12 @@ namespace OnChurch.Web.Helpers
             };
         }
 
-        public EditMemberViewModel toMemberViewModel(Member member)
+        public async Task<EditMemberViewModel> ToMemberViewModelAsync(Member member)
         {
+            Section section = await _context.Sections.FirstOrDefaultAsync(s => s.Churches.FirstOrDefault(c => c.Id == member.Church.Id) != null);
+            Campus campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Sections.FirstOrDefault(s => s.Id == section.Id) != null);
+            Profession profession = await _context.Professions.FirstOrDefaultAsync(p => p.Id == member.Profession.Id);
+
             return new EditMemberViewModel
             {
                 Id = member.Id,
@@ -43,12 +50,16 @@ namespace OnChurch.Web.Helpers
                 Email = member.Email,
                 PhoneNumber = member.PhoneNumber,
                 PhotoId = member.PhotoId,
-                Profession = member.Profession,
-                ProfessionId = member.IdProfession,
+                Profession = profession,
+                ProfessionId = profession.Id,
                 Professions = _combosHelper.GetComboProfessions(),
                 Church = member.Church,
-                Churches = _combosHelper.GetComboChurch(member.Church.IdSection),
+                Churches = _combosHelper.GetComboChurch(section.Id),
                 ChurchId = member.Church.Id,
+                CampusId = campus.Id,
+                SectionId = section.Id,
+                Campuses = _combosHelper.GetComboCampus(),
+                Sections = _combosHelper.GetComboSection(campus.Id)
             };
         }
 

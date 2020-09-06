@@ -16,5 +16,8 @@ namespace OnChurch.Common.Entities
         [JsonIgnore]
         [NotMapped]
         public int IdSection { get; set; }
+
+        [JsonIgnore]
+        public Section Section { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace OnChurch.Web.Helpers
 
         public IEnumerable<SelectListItem> GetComboChurch(int sectionId)
         {
-            Section section = _context.Sections.Find(sectionId);
+            var section = _context.Sections.Find(sectionId);
             List<SelectListItem> list = new List<SelectListItem>();
             if (section != null)
             {
