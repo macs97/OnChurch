@@ -19,5 +19,16 @@ namespace OnChurch.Web.Data.Entities
 
         [JsonIgnore]
         public Section Section { get; set; }
+
+        [JsonIgnore]
+        public ICollection<User> Users { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Meeting> Meetings { get; set; }
+
+        [Display(Name = "# Users")]
+        public int UsersNumber => Users == null ? 0 : Users.Count;
+
+
     }
 }

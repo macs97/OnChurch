@@ -73,7 +73,7 @@ namespace OnChurch.Web.Controllers.API
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Route("UpdateMember")]
-        public async Task<IActionResult> UpdateMember([FromBody] UpdateMemberRequest request)
+        public async Task<IActionResult> UpdateMember([FromBody] UpdateUserRequest request)
         {
             if (!ModelState.IsValid)
             {

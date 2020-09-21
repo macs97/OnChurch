@@ -60,7 +60,7 @@ namespace OnChurch.Web.Controllers
 
                 try
                 {
-                    User member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
+                    User member = await _userHelper.AddMemberAsync(model, imageId, UserType.Member);
                     if (member == null)
                     {
                         ModelState.AddModelError(string.Empty, "This email is already used.");
