@@ -34,7 +34,7 @@ namespace OnChurch.Web.Controllers.API
         {
             if (ModelState.IsValid)
             {
-                Member member = await _userHelper.GetMemberAsync(model.Username);
+                User member = await _userHelper.GetMemberAsync(model.Username);
                 if (member != null)
                 {
                     Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.ValidatePasswordAsync(member, model.Password);
@@ -79,7 +79,7 @@ namespace OnChurch.Web.Controllers.API
             {
                 return BadRequest();
             }
-            Member member = await _userHelper.GetMemberAsync(request.UserName);
+            User member = await _userHelper.GetMemberAsync(request.UserName);
             if (member == null)
             {
                 return NotFound("Error001");

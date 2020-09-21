@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Common.Responses;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using OnChurch.Web.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
 {
@@ -62,7 +60,7 @@ namespace OnChurch.Web.Controllers
 
                 try
                 {
-                    Member member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
+                    User member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
                     if (member == null)
                     {
                         ModelState.AddModelError(string.Empty, "This email is already used.");
@@ -118,7 +116,7 @@ namespace OnChurch.Web.Controllers
 
         public async Task<IActionResult> ChangeMember()
         {
-            Member member = await _userHelper.GetMemberAsync(User.Identity.Name);
+            User member = await _userHelper.GetMemberAsync(User.Identity.Name);
 
             if (member == null)
             {
@@ -143,7 +141,7 @@ namespace OnChurch.Web.Controllers
                     {
                         imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
                     }
-                    Member member = await _userHelper.GetMemberAsync(User.Identity.Name);
+                    User member = await _userHelper.GetMemberAsync(User.Identity.Name);
 
                     member.FirstName = model.FirstName;
                     member.LastName = model.LastName;
@@ -220,10 +218,10 @@ namespace OnChurch.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetMemberAsync(User.Identity.Name);
+                User user = await _userHelper.GetMemberAsync(User.Identity.Name);
                 if (user != null)
                 {
-                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    IdentityResult result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("ChangeMember");
@@ -249,7 +247,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _userHelper.GetMemberAsync(new Guid(memberId));
+            User member = await _userHelper.GetMemberAsync(new Guid(memberId));
             if (member == null)
             {
                 return NotFound();
@@ -302,7 +300,7 @@ namespace OnChurch.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Member member = await _userHelper.GetMemberAsync(model.Email);
+                User member = await _userHelper.GetMemberAsync(model.Email);
                 if (member == null)
                 {
                     ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
@@ -333,7 +331,7 @@ namespace OnChurch.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            Member member = await _userHelper.GetMemberAsync(model.UserName);
+            User member = await _userHelper.GetMemberAsync(model.UserName);
             if (member != null)
             {
                 IdentityResult result = await _userHelper.ResetPasswordAsync(member, model.Token, model.Password);

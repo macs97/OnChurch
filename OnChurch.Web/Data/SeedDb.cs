@@ -1,5 +1,4 @@
-﻿using OnChurch.Common.Entities;
-using OnChurch.Common.Enum;
+﻿using OnChurch.Common.Enum;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace OnChurch.Web.Data
         }
 
 
-        private async Task CheckProfessionsAsync() 
+        private async Task CheckProfessionsAsync()
         {
             _context.Professions.Add(new Profession
             {
@@ -50,7 +49,7 @@ namespace OnChurch.Web.Data
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
         }
 
-        private async Task<Member> CheckUserAsync(
+        private async Task<User> CheckUserAsync(
            string document,
            string firstName,
            string lastName,
@@ -59,10 +58,10 @@ namespace OnChurch.Web.Data
            string address,
            UserType userType)
         {
-            Member member = await _userHelper.GetMemberAsync(email);
+            User member = await _userHelper.GetMemberAsync(email);
             if (member == null)
             {
-                member = new Member
+                member = new User
                 {
                     FirstName = firstName,
                     LastName = lastName,
@@ -72,7 +71,7 @@ namespace OnChurch.Web.Data
                     Address = address,
                     Document = document,
                     Church = _context.Churches.FirstOrDefault(),
-                    Profession = _context.Professions.FirstOrDefault(),                    
+                    Profession = _context.Professions.FirstOrDefault(),
                     UserType = userType
                 };
 

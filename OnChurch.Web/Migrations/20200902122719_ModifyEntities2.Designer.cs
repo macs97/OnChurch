@@ -131,7 +131,7 @@ namespace OnChurch.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Campus", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Campus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -149,7 +149,7 @@ namespace OnChurch.Web.Migrations
                     b.ToTable("Campuses");
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Church", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Church", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,7 +168,7 @@ namespace OnChurch.Web.Migrations
                     b.ToTable("Churches");
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Profession", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Profession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +186,7 @@ namespace OnChurch.Web.Migrations
                     b.ToTable("Professions");
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Section", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Section", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -208,7 +208,7 @@ namespace OnChurch.Web.Migrations
                     b.ToTable("Sections");
                 });
 
-            modelBuilder.Entity("OnChurch.Web.Data.Entities.Member", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -296,7 +296,7 @@ namespace OnChurch.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("OnChurch.Web.Data.Entities.Member")
+                    b.HasOne("OnChurch.Web.Data.Entities.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -304,7 +304,7 @@ namespace OnChurch.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("OnChurch.Web.Data.Entities.Member")
+                    b.HasOne("OnChurch.Web.Data.Entities.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -317,7 +317,7 @@ namespace OnChurch.Web.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("OnChurch.Web.Data.Entities.Member")
+                    b.HasOne("OnChurch.Web.Data.Entities.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -325,33 +325,33 @@ namespace OnChurch.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("OnChurch.Web.Data.Entities.Member")
+                    b.HasOne("OnChurch.Web.Data.Entities.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Church", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Church", b =>
                 {
-                    b.HasOne("OnChurch.Common.Entities.Section")
+                    b.HasOne("OnChurch.Web.Data.Entities.Section")
                         .WithMany("Churches")
                         .HasForeignKey("SectionId");
                 });
 
-            modelBuilder.Entity("OnChurch.Common.Entities.Section", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.Section", b =>
                 {
-                    b.HasOne("OnChurch.Common.Entities.Campus")
+                    b.HasOne("OnChurch.Web.Data.Entities.Campus")
                         .WithMany("Sections")
                         .HasForeignKey("CampusId1");
                 });
 
-            modelBuilder.Entity("OnChurch.Web.Data.Entities.Member", b =>
+            modelBuilder.Entity("OnChurch.Web.Data.Entities.User", b =>
                 {
-                    b.HasOne("OnChurch.Common.Entities.Church", "Church")
+                    b.HasOne("OnChurch.Web.Data.Entities.Church", "Church")
                         .WithMany()
                         .HasForeignKey("ChurchId1");
 
-                    b.HasOne("OnChurch.Common.Entities.Profession", "Profession")
+                    b.HasOne("OnChurch.Web.Data.Entities.Profession", "Profession")
                         .WithMany()
                         .HasForeignKey("ProfessionId");
                 });

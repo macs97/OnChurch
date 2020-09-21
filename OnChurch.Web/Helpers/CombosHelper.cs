@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
+using OnChurch.Web.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnChurch.Web.Helpers
 {

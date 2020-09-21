@@ -39,7 +39,7 @@ namespace OnChurch.Web
             });
 
 
-            services.AddIdentity<Member, IdentityRole>(cfg =>
+            services.AddIdentity<User, IdentityRole>(cfg =>
             {
                 cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
                 cfg.SignIn.RequireConfirmedEmail = true;

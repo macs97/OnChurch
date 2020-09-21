@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnChurch.Web.Data.Entities
 {
-    public class Member : IdentityUser
+    public class User : IdentityUser
     {
         [MaxLength(20)]
         [Required]

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Models;
@@ -18,9 +17,9 @@ namespace OnChurch.Web.Helpers
             _context = context;
             _combosHelper = combosHelper;
         }
-        public async Task<Member> ToMemberAsync(EditMemberViewModel model, Guid photoId, bool isNew)
+        public async Task<User> ToMemberAsync(EditMemberViewModel model, Guid photoId, bool isNew)
         {
-            return new Member
+            return new User
             {
                 Id = isNew ? "" : model.Id,
                 FirstName = model.FirstName,
@@ -34,7 +33,7 @@ namespace OnChurch.Web.Helpers
             };
         }
 
-        public async Task<EditMemberViewModel> ToMemberViewModelAsync(Member member)
+        public async Task<EditMemberViewModel> ToMemberViewModelAsync(User member)
         {
             Section section = await _context.Sections.FirstOrDefaultAsync(s => s.Churches.FirstOrDefault(c => c.Id == member.Church.Id) != null);
             Campus campus = await _context.Campuses.FirstOrDefaultAsync(c => c.Sections.FirstOrDefault(s => s.Id == section.Id) != null);

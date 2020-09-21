@@ -1,12 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data.Entities;
 
 namespace OnChurch.Web.Data
 {
-    public class DataContext : IdentityDbContext<Member>
+    public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

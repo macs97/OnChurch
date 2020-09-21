@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnChurch.Common.Entities
+namespace OnChurch.Web.Data.Entities
 {
     public class Profession
     {

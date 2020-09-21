@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
@@ -63,7 +62,7 @@ namespace OnChurch.Web.Controllers
 
                 try
                 {
-                    Member member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
+                    User member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
                     //_context.Add(member);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -95,7 +94,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Users
+            User member = await _context.Users
                 .Include(m => m.Profession)
                 .FirstOrDefaultAsync(m => m.Id == id);
             member.Id = id;
@@ -113,11 +112,11 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Users
+            User member = await _context.Users
                 .Include(m => m.Profession)
                 .Include(m => m.Church)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            
+
             if (member == null)
             {
                 return NotFound();
@@ -144,7 +143,7 @@ namespace OnChurch.Web.Controllers
                     {
                         imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
                     }
-                    Member member = await _converterHelper.ToMemberAsync(model, imageId, false);
+                    User member = await _converterHelper.ToMemberAsync(model, imageId, false);
                     _context.Update(member);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -177,7 +176,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _context.Users
+            User member = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (member == null)
             {
