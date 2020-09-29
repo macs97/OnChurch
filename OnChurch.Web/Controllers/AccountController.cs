@@ -45,6 +45,18 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
+        public IActionResult RegisterTeacher()
+        {
+            AddTeacherViewModel model = new AddTeacherViewModel
+            {
+                Professions = _combosHelper.GetComboProfessions(),
+                Campuses = _combosHelper.GetComboCampus(),
+                Sections = _combosHelper.GetComboSection(0),
+                Churches = _combosHelper.GetComboChurch(0)
+            };
+            return View(model);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddMemberViewModel model)
@@ -74,6 +86,75 @@ namespace OnChurch.Web.Controllers
                     string tokenLink = Url.Action("ConfirmEmail", "Account", new
                     {
                         memberId = member.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                        $"To allow the user, " +
+                        $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                    if (response.IsSuccess)
+                    {
+                        ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                        return View(model);
+                    }
+
+                    ModelState.AddModelError(string.Empty, response.Message);
+
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            model.Professions = _combosHelper.GetComboProfessions();
+            model.Campuses = _combosHelper.GetComboCampus();
+            model.Sections = _combosHelper.GetComboSection(model.CampusId);
+            model.Churches = _combosHelper.GetComboChurch(model.ChurchId);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterTeacher(AddTeacherViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid imageId = Guid.Empty;
+
+                if (model.PhotoId != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
+                }
+
+                try
+                {
+                    User teacher = await _userHelper.AddTeacherAsync(model, imageId);
+                    if (teacher == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "This email is already used.");
+                        model.Campuses = _combosHelper.GetComboCampus();
+                        model.Sections = _combosHelper.GetComboSection(model.CampusId);
+                        model.Churches = _combosHelper.GetComboChurch(model.ChurchId);
+                        return View(model);
+                    }
+
+                    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(teacher);
+                    string tokenLink = Url.Action("ConfirmEmailTeacher", "Account", new
+                    {
+                        teacherId = teacher.Id,
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
@@ -186,6 +267,7 @@ namespace OnChurch.Web.Controllers
             return View(new LoginViewModel());
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -262,8 +344,62 @@ namespace OnChurch.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ConfirmEmailTeacher(string teacherId, string token)
+        {
+            if (string.IsNullOrEmpty(teacherId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
 
-        public IActionResult NotAuthorized()
+            User teacher = await _userHelper.GetMemberAsync(new Guid(teacherId));
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            ResetPasswordViewModel reset = new ResetPasswordViewModel
+            {
+                Token = token,
+                UserName = teacher.UserName
+            };
+
+            return View(reset);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmEmailTeacher(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User teacher = await _userHelper.GetMemberAsync(model.UserName);
+                if (teacher != null)
+                {
+                    IdentityResult resultConfirm = await _userHelper.ConfirmEmailAsync(teacher, model.Token);
+                    if (resultConfirm.Succeeded)
+                    {
+                        string myToken = await _userHelper.GeneratePasswordResetTokenAsync(teacher);
+                        IdentityResult resultSetPassword = await _userHelper.ResetPasswordAsync(teacher, myToken, model.Password);
+                        if (resultSetPassword.Succeeded)
+                        {
+                            ViewBag.Message = "Set password successful.";
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        ViewBag.Message = "Error while setting the password.";
+                        return View(model);
+                    }
+                    
+                    ViewBag.Message = "User not found.";
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
+
+
+
+            public IActionResult NotAuthorized()
         {
             return View();
         }

@@ -13,6 +13,8 @@ namespace OnChurch.Web.Helpers
 
         Task<IdentityResult> AddMemberAsync(User member, string password);
 
+        Task<User> AddTeacherAsync(AddTeacherViewModel model, Guid photoId);
+
         Task CheckRoleAsync(string roleName);
 
         Task AddMemberToRoleAsync(User member, string roleName);

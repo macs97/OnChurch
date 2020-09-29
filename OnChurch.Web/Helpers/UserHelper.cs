@@ -29,6 +29,34 @@ namespace OnChurch.Web.Helpers
             return await _userManager.CreateAsync(member, password);
         }
 
+        public async Task<User> AddTeacherAsync(AddTeacherViewModel model, Guid photoId)
+        {
+            User teacher = new User
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Address = model.Address,
+                Document = model.Document,
+                Email = model.Username,
+                PhoneNumber = model.PhoneNumber,
+                PhotoId = photoId,
+                Profession = await _context.Professions.FindAsync(model.ProfessionId),
+                Church = await _context.Churches.FindAsync(model.ChurchId),
+                UserName = model.Username,
+                UserType = Common.Enum.UserType.Teacher
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(teacher);
+            if (result != IdentityResult.Success)
+            {
+                return null;
+            }
+
+            User newTeacher = await GetMemberAsync(model.Username);
+            await AddMemberToRoleAsync(newTeacher, teacher.UserType.ToString());
+            return newTeacher;
+        }
+
         public async Task AddMemberToRoleAsync(User member, string roleName)
         {
             await _userManager.AddToRoleAsync(member, roleName);
