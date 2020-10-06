@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using OnChurch.Common.Entities;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OnChurch.Web.Helpers
 {

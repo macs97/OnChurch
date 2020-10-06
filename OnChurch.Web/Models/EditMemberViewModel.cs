@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnChurch.Web.Models
 {
-    public class EditMemberViewModel : Member
+    public class EditMemberViewModel : User
     {
         [Display(Name = "Photograph")]
         public IFormFile PhotoFile { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
+using OnChurch.Web.Data.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -118,7 +118,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Data.Entities.Member member = await _context.Users
+            Data.Entities.User member = await _context.Users
                 .Include(m => m.Profession)
                 .FirstOrDefaultAsync(m => m.Profession.Id == id);
 

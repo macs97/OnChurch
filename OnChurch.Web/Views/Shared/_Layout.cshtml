@@ -33,12 +33,25 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Member"))
+                    {
+                        <li><a asp-area="" asp-controller="Members" asp-action="Meetings">Meetings</a></li>
+                    }
+
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
 
                         <li><a asp-area="" asp-controller="Campuses" asp-action="Index">Campus</a></li>
                         <li><a asp-area="" asp-controller="Professions" asp-action="Index">Professions</a></li>
                         <li><a asp-area="" asp-controller="Members" asp-action="Index">Members</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="RegisterTeacher">Register Teacher</a></li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                    {
+
+                        <li><a asp-area="" asp-controller="Teachers" asp-action="Members">Members</a></li>
+                        <li><a asp-area="" asp-controller="Teachers" asp-action="IndexMeeting">Meetings</a></li>
                     }
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

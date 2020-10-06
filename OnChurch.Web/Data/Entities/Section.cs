@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
-namespace OnChurch.Common.Entities
+namespace OnChurch.Web.Data.Entities
 {
     public class Section
     {

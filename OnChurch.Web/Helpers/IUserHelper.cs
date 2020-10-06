@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Models;
@@ -10,37 +9,39 @@ namespace OnChurch.Web.Helpers
 {
     public interface IUserHelper
     {
-        Task<Member> GetMemberAsync(string email);
+        Task<User> GetMemberAsync(string email);
 
-        Task<IdentityResult> AddMemberAsync(Member member, string password);
+        Task<IdentityResult> AddMemberAsync(User member, string password);
+
+        Task<User> AddTeacherAsync(AddTeacherViewModel model, Guid photoId);
 
         Task CheckRoleAsync(string roleName);
 
-        Task AddMemberToRoleAsync(Member member, string roleName);
+        Task AddMemberToRoleAsync(User member, string roleName);
 
-        Task<bool> IsMemberInRoleAsync(Member member, string roleName);
+        Task<bool> IsMemberInRoleAsync(User member, string roleName);
 
-        Task<Member> AddMemberAsync(AddMemberViewModel model, Guid photoId, UserType userType);
+        Task<User> AddMemberAsync(AddMemberViewModel model, Guid photoId, UserType userType);
 
         Task<SignInResult> LoginAsync(LoginViewModel model);
 
         Task LogoutAsync();
 
-        Task<SignInResult> ValidatePasswordAsync(Member member, string password);
+        Task<SignInResult> ValidatePasswordAsync(User member, string password);
 
-        Task<IdentityResult> UpdateMemberAsync(Member member);
+        Task<IdentityResult> UpdateMemberAsync(User member);
 
-        Task<Member> GetMemberAsync(Guid memberId);
+        Task<User> GetMemberAsync(Guid memberId);
 
-        Task<IdentityResult> ChangePasswordAsync(Member member, string oldPassword, string newPassword);
+        Task<IdentityResult> ChangePasswordAsync(User member, string oldPassword, string newPassword);
 
-        Task<string> GenerateEmailConfirmationTokenAsync(Member member);
+        Task<string> GenerateEmailConfirmationTokenAsync(User member);
 
-        Task<IdentityResult> ConfirmEmailAsync(Member member, string token);
+        Task<IdentityResult> ConfirmEmailAsync(User member, string token);
 
-        Task<string> GeneratePasswordResetTokenAsync(Member member);
+        Task<string> GeneratePasswordResetTokenAsync(User member);
 
-        Task<IdentityResult> ResetPasswordAsync(Member member, string token, string password);
+        Task<IdentityResult> ResetPasswordAsync(User member, string token, string password);
 
         Task<Church> GetChurchAsync(int idChurch);
 

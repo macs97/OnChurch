@@ -2,7 +2,7 @@
 
 namespace OnChurch.Common.Requests
 {
-    public class UpdateMemberRequest
+    public class UpdateUserRequest
     {
         [Required]
         public string Document { get; set; }

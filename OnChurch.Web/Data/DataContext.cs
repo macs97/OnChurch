@@ -1,12 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data.Entities;
 
 namespace OnChurch.Web.Data
 {
-    public class DataContext : IdentityDbContext<Member>
+    public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -20,6 +19,10 @@ namespace OnChurch.Web.Data
         public DbSet<Church> Churches { get; set; }
 
         public DbSet<Profession> Professions { get; set; }
+
+        public DbSet<Meeting> Meetings { get; set; }
+
+        public DbSet<Assistance> Assistances { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

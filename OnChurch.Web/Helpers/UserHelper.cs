@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
@@ -13,11 +12,11 @@ namespace OnChurch.Web.Helpers
     public class UserHelper : IUserHelper
     {
         private readonly DataContext _context;
-        private readonly UserManager<Member> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<Member> _signInManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserHelper(DataContext context, UserManager<Member> userManager, RoleManager<IdentityRole> roleManager, SignInManager<Member> signInManager)
+        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
@@ -25,12 +24,40 @@ namespace OnChurch.Web.Helpers
             _signInManager = signInManager;
         }
 
-        public async Task<IdentityResult> AddMemberAsync(Member member, string password)
+        public async Task<IdentityResult> AddMemberAsync(User member, string password)
         {
             return await _userManager.CreateAsync(member, password);
         }
 
-        public async Task AddMemberToRoleAsync(Member member, string roleName)
+        public async Task<User> AddTeacherAsync(AddTeacherViewModel model, Guid photoId)
+        {
+            User teacher = new User
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Address = model.Address,
+                Document = model.Document,
+                Email = model.Username,
+                PhoneNumber = model.PhoneNumber,
+                PhotoId = photoId,
+                Profession = await _context.Professions.FindAsync(model.ProfessionId),
+                Church = await _context.Churches.FindAsync(model.ChurchId),
+                UserName = model.Username,
+                UserType = Common.Enum.UserType.Teacher
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(teacher);
+            if (result != IdentityResult.Success)
+            {
+                return null;
+            }
+
+            User newTeacher = await GetMemberAsync(model.Username);
+            await AddMemberToRoleAsync(newTeacher, teacher.UserType.ToString());
+            return newTeacher;
+        }
+
+        public async Task AddMemberToRoleAsync(User member, string roleName)
         {
             await _userManager.AddToRoleAsync(member, roleName);
         }
@@ -47,7 +74,7 @@ namespace OnChurch.Web.Helpers
             }
         }
 
-        public async Task<Member> GetMemberAsync(string email)
+        public async Task<User> GetMemberAsync(string email)
         {
             return await _context.Users
                 .Include(u => u.Church)
@@ -55,15 +82,15 @@ namespace OnChurch.Web.Helpers
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<bool> IsMemberInRoleAsync(Member member, string roleName)
+        public async Task<bool> IsMemberInRoleAsync(User member, string roleName)
         {
             return await _userManager.IsInRoleAsync(member, roleName);
         }
 
-        public async Task<Member> AddMemberAsync(AddMemberViewModel model, Guid photoId, UserType userType)
+        public async Task<User> AddMemberAsync(AddMemberViewModel model, Guid photoId, UserType userType)
         {
 
-            Member member = new Member
+            User member = new User
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -84,7 +111,7 @@ namespace OnChurch.Web.Helpers
                 return null;
             }
 
-            Member newMember = await GetMemberAsync(model.Username);
+            User newMember = await GetMemberAsync(model.Username);
             await AddMemberToRoleAsync(newMember, member.UserType.ToString());
             return newMember;
         }
@@ -103,44 +130,44 @@ namespace OnChurch.Web.Helpers
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<SignInResult> ValidatePasswordAsync(Member member, string password)
+        public async Task<SignInResult> ValidatePasswordAsync(User member, string password)
         {
             return await _signInManager.CheckPasswordSignInAsync(member, password, false);
         }
 
-        public async Task<IdentityResult> UpdateMemberAsync(Member member)
+        public async Task<IdentityResult> UpdateMemberAsync(User member)
         {
             return await _userManager.UpdateAsync(member);
         }
 
-        public async Task<IdentityResult> ChangePasswordAsync(Member member, string oldPassword, string newPassword)
+        public async Task<IdentityResult> ChangePasswordAsync(User member, string oldPassword, string newPassword)
         {
             return await _userManager.ChangePasswordAsync(member, oldPassword, newPassword);
         }
 
-        public async Task<Member> GetMemberAsync(Guid memberId)
+        public async Task<User> GetMemberAsync(Guid memberId)
         {
             return await _context.Users
                 .Include(u => u.Church)
                 .FirstOrDefaultAsync(u => u.Id == memberId.ToString());
         }
 
-        public async Task<IdentityResult> ConfirmEmailAsync(Member member, string token)
+        public async Task<IdentityResult> ConfirmEmailAsync(User member, string token)
         {
             return await _userManager.ConfirmEmailAsync(member, token);
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(Member member)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(User member)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(member);
         }
 
-        public async Task<string> GeneratePasswordResetTokenAsync(Member member)
+        public async Task<string> GeneratePasswordResetTokenAsync(User member)
         {
             return await _userManager.GeneratePasswordResetTokenAsync(member);
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(Member member, string token, string password)
+        public async Task<IdentityResult> ResetPasswordAsync(User member, string token, string password)
         {
             return await _userManager.ResetPasswordAsync(member, token, password);
         }

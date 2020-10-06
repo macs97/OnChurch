@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Web.Data;
+using OnChurch.Web.Data.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using OnChurch.Common.Responses;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using OnChurch.Web.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnChurch.Web.Controllers
 {
@@ -47,6 +45,18 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
+        public IActionResult RegisterTeacher()
+        {
+            AddTeacherViewModel model = new AddTeacherViewModel
+            {
+                Professions = _combosHelper.GetComboProfessions(),
+                Campuses = _combosHelper.GetComboCampus(),
+                Sections = _combosHelper.GetComboSection(0),
+                Churches = _combosHelper.GetComboChurch(0)
+            };
+            return View(model);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddMemberViewModel model)
@@ -62,7 +72,7 @@ namespace OnChurch.Web.Controllers
 
                 try
                 {
-                    Member member = await _userHelper.AddMemberAsync(model, imageId, UserType.User);
+                    User member = await _userHelper.AddMemberAsync(model, imageId, UserType.Member);
                     if (member == null)
                     {
                         ModelState.AddModelError(string.Empty, "This email is already used.");
@@ -116,9 +126,78 @@ namespace OnChurch.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterTeacher(AddTeacherViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid imageId = Guid.Empty;
+
+                if (model.PhotoId != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
+                }
+
+                try
+                {
+                    User teacher = await _userHelper.AddTeacherAsync(model, imageId);
+                    if (teacher == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "This email is already used.");
+                        model.Campuses = _combosHelper.GetComboCampus();
+                        model.Sections = _combosHelper.GetComboSection(model.CampusId);
+                        model.Churches = _combosHelper.GetComboChurch(model.ChurchId);
+                        return View(model);
+                    }
+
+                    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(teacher);
+                    string tokenLink = Url.Action("ConfirmEmailTeacher", "Account", new
+                    {
+                        teacherId = teacher.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                        $"To allow the user, " +
+                        $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                    if (response.IsSuccess)
+                    {
+                        ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                        return View(model);
+                    }
+
+                    ModelState.AddModelError(string.Empty, response.Message);
+
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            model.Professions = _combosHelper.GetComboProfessions();
+            model.Campuses = _combosHelper.GetComboCampus();
+            model.Sections = _combosHelper.GetComboSection(model.CampusId);
+            model.Churches = _combosHelper.GetComboChurch(model.ChurchId);
+            return View(model);
+        }
+
         public async Task<IActionResult> ChangeMember()
         {
-            Member member = await _userHelper.GetMemberAsync(User.Identity.Name);
+            User member = await _userHelper.GetMemberAsync(User.Identity.Name);
 
             if (member == null)
             {
@@ -143,7 +222,7 @@ namespace OnChurch.Web.Controllers
                     {
                         imageId = await _blobHelper.UploadBlobAsync(model.PhotoFile, "members");
                     }
-                    Member member = await _userHelper.GetMemberAsync(User.Identity.Name);
+                    User member = await _userHelper.GetMemberAsync(User.Identity.Name);
 
                     member.FirstName = model.FirstName;
                     member.LastName = model.LastName;
@@ -188,6 +267,7 @@ namespace OnChurch.Web.Controllers
             return View(new LoginViewModel());
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -220,10 +300,10 @@ namespace OnChurch.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetMemberAsync(User.Identity.Name);
+                User user = await _userHelper.GetMemberAsync(User.Identity.Name);
                 if (user != null)
                 {
-                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    IdentityResult result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("ChangeMember");
@@ -249,7 +329,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Member member = await _userHelper.GetMemberAsync(new Guid(memberId));
+            User member = await _userHelper.GetMemberAsync(new Guid(memberId));
             if (member == null)
             {
                 return NotFound();
@@ -264,8 +344,62 @@ namespace OnChurch.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ConfirmEmailTeacher(string teacherId, string token)
+        {
+            if (string.IsNullOrEmpty(teacherId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
 
-        public IActionResult NotAuthorized()
+            User teacher = await _userHelper.GetMemberAsync(new Guid(teacherId));
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            ResetPasswordViewModel reset = new ResetPasswordViewModel
+            {
+                Token = token,
+                UserName = teacher.UserName
+            };
+
+            return View(reset);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmEmailTeacher(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User teacher = await _userHelper.GetMemberAsync(model.UserName);
+                if (teacher != null)
+                {
+                    IdentityResult resultConfirm = await _userHelper.ConfirmEmailAsync(teacher, model.Token);
+                    if (resultConfirm.Succeeded)
+                    {
+                        string myToken = await _userHelper.GeneratePasswordResetTokenAsync(teacher);
+                        IdentityResult resultSetPassword = await _userHelper.ResetPasswordAsync(teacher, myToken, model.Password);
+                        if (resultSetPassword.Succeeded)
+                        {
+                            ViewBag.Message = "Set password successful.";
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        ViewBag.Message = "Error while setting the password.";
+                        return View(model);
+                    }
+                    
+                    ViewBag.Message = "User not found.";
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
+
+
+
+            public IActionResult NotAuthorized()
         {
             return View();
         }
@@ -302,7 +436,7 @@ namespace OnChurch.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Member member = await _userHelper.GetMemberAsync(model.Email);
+                User member = await _userHelper.GetMemberAsync(model.Email);
                 if (member == null)
                 {
                     ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
@@ -333,7 +467,7 @@ namespace OnChurch.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            Member member = await _userHelper.GetMemberAsync(model.UserName);
+            User member = await _userHelper.GetMemberAsync(model.UserName);
             if (member != null)
             {
                 IdentityResult result = await _userHelper.ResetPasswordAsync(member, model.Token, model.Password);

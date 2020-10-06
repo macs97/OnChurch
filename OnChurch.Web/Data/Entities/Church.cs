@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OnChurch.Common.Entities
+namespace OnChurch.Web.Data.Entities
 {
     public class Church
     {
@@ -19,5 +19,16 @@ namespace OnChurch.Common.Entities
 
         [JsonIgnore]
         public Section Section { get; set; }
+
+        [JsonIgnore]
+        public ICollection<User> Users { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Meeting> Meetings { get; set; }
+
+        [Display(Name = "# Users")]
+        public int UsersNumber => Users == null ? 0 : Users.Count;
+
+
     }
 }

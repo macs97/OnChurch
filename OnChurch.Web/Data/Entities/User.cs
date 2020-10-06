@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using OnChurch.Common.Entities;
 using OnChurch.Common.Enum;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnChurch.Web.Data.Entities
 {
-    public class Member : IdentityUser
+    public class User : IdentityUser
     {
         [MaxLength(20)]
         [Required]
@@ -47,11 +47,13 @@ namespace OnChurch.Web.Data.Entities
         public int IdProfession { get; set; }
 
 
-        [Display(Name = "Member")]
+        [Display(Name = "User")]
         public string FullName => $"{FirstName} {LastName}";
 
-        [Display(Name = "Member")]
+        [Display(Name = "User")]
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
+
+        public ICollection<Assistance> Assistances { get; set; }
     }
 
 }

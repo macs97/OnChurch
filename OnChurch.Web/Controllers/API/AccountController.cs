@@ -34,7 +34,7 @@ namespace OnChurch.Web.Controllers.API
         {
             if (ModelState.IsValid)
             {
-                Member member = await _userHelper.GetMemberAsync(model.Username);
+                User member = await _userHelper.GetMemberAsync(model.Username);
                 if (member != null)
                 {
                     Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.ValidatePasswordAsync(member, model.Password);
@@ -73,13 +73,13 @@ namespace OnChurch.Web.Controllers.API
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Route("UpdateMember")]
-        public async Task<IActionResult> UpdateMember([FromBody] UpdateMemberRequest request)
+        public async Task<IActionResult> UpdateMember([FromBody] UpdateUserRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            Member member = await _userHelper.GetMemberAsync(request.UserName);
+            User member = await _userHelper.GetMemberAsync(request.UserName);
             if (member == null)
             {
                 return NotFound("Error001");
