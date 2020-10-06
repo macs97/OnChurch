@@ -20,8 +20,6 @@ namespace OnChurch.Web.Data.Entities
 
         public ICollection<Assistance> Assistances { get; set; }
 
-        [Display(Name = "# Assistances")]
-        public int AssistancesNumber => Assistances == null ? 0 : Assistances.Count;
     }
 
 }

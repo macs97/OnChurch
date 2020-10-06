@@ -20,6 +20,10 @@ namespace OnChurch.Web.Data
 
         public DbSet<Profession> Professions { get; set; }
 
+        public DbSet<Meeting> Meetings { get; set; }
+
+        public DbSet<Assistance> Assistances { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

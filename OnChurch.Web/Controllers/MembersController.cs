@@ -6,6 +6,8 @@ using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using OnChurch.Web.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -167,6 +169,13 @@ namespace OnChurch.Web.Controllers
             }
             model.Professions = _combosHelper.GetComboProfessions();
             return View(model);
+        }
+
+        public async Task<IActionResult> Meetings()
+        {
+            User user = await _userHelper.GetMemberAsync(User.Identity.Name);
+            ICollection<Assistance> assistances = await _context.Assistances.Include(a => a.User).Include(a => a.Meeting).Where(a => a.User == user).ToListAsync();
+            return View(assistances);
         }
 
         public async Task<IActionResult> Delete(string? id)

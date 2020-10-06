@@ -1,0 +1,27 @@
+﻿@model OnChurch.Web.Models.AddMeetingViewModel
+
+@{
+    ViewData["Title"] = "Meeting";
+}
+
+<h4>New Meeting</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Meeting" method="post">
+            <div asp-validation-summary="All"></div>
+            <input type="hidden" asp-for="ChurchId"/>
+            <input type="hidden" asp-for="Assistances" />
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control datetime-local" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="IndexMeeting" class="btn btn-success">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
