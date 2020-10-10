@@ -54,7 +54,6 @@ namespace OnChurch.Web.Data.Entities
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
 
         [JsonIgnore]
-        [NotMapped]
         public ICollection<Assistance> Assistances { get; set; }
     }
 

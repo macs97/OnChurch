@@ -16,7 +16,6 @@ namespace OnChurch.Web.Data.Entities
         public User User { get; set; }
 
         [JsonIgnore]
-        [NotMapped]
         [Required]
         public Meeting Meeting { get; set; }
 
