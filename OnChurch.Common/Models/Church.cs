@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
-namespace OnChurch.Web.Data.Entities
+namespace OnChurch.Common.Models
 {
     public class Church
     {
@@ -28,5 +30,6 @@ namespace OnChurch.Web.Data.Entities
 
         [Display(Name = "# Users")]
         public int UsersNumber => Users == null ? 0 : Users.Count;
+
     }
 }

@@ -1,11 +1,11 @@
-using Prism;
-using Prism.Ioc;
+using OnChurch.Common.Services;
 using OnChurch.Prism.ViewModels;
 using OnChurch.Prism.Views;
-using Xamarin.Essentials.Interfaces;
+using Prism;
+using Prism.Ioc;
 using Xamarin.Essentials.Implementation;
+using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
-using OnChurch.Common.Services;
 
 namespace OnChurch.Prism
 {
@@ -20,7 +20,7 @@ namespace OnChurch.Prism
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await NavigationService.NavigateAsync("NavigationPage/MeetingsPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -29,6 +29,7 @@ namespace OnChurch.Prism
             containerRegistry.Register<IApiService, ApiService>();
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<MeetingsPage, MeetingsPageViewModel>();
         }
     }
 }

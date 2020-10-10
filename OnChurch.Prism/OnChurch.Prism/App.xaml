@@ -5,7 +5,9 @@
              x:Class="OnChurch.Prism.App">
   <Application.Resources>
 
-    <!-- Application resource dictionary -->
+        <ResourceDictionary>
+            <x:String x:Key="UrlAPI">https://onchurchweb.azurewebsites.net</x:String>
+        </ResourceDictionary>
 
   </Application.Resources>
 </prism:PrismApplication>

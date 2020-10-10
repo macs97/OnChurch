@@ -15,22 +15,22 @@ namespace OnChurch.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MeetingsController : ControllerBase
+    public class MeetingController : ControllerBase
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
-        public MeetingsController(DataContext context, IUserHelper userHelper)
+        public MeetingController(DataContext context, IUserHelper userHelper)
         {
             _context = context;
             _userHelper = userHelper;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        [Route("GetMeetings")]
-        public async Task<IActionResult> GetMeetings()
+        //[Route("GetMeetings")]
+        public async Task<IActionResult> GetMeeting()
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            /*string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return NotFound();
@@ -39,12 +39,12 @@ namespace OnChurch.Web.Controllers.API
             if (user == null)
             {
                 return NotFound();
-            }
+            }*/
 
             List<Meeting> meeting = await _context.Meetings
                 .Include(m => m.Assistances)
-                .ThenInclude(a => a.User)
-                .Where(m => m.Church == user.Church).ToListAsync();
+                .ThenInclude(a => a.User).ToListAsync();
+                //.Where(m => m.Church == user.Church).ToListAsync();
             if (meeting == null)
             {
                 return NotFound();

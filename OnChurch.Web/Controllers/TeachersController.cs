@@ -62,7 +62,7 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
             User user = await _userHelper.GetMemberAsync(User.Identity.Name);
-            List<User> users = await _context.Users.Where(u => u.Church.Id == user.Church.Id ).ToListAsync();
+            List<User> users = await _context.Users.Where(u => u.Church.Id == user.Church.Id && u.UserType != Common.Enum.UserType.Teacher).ToListAsync();
             Meeting meeting = await _context.Meetings.Include(m => m.Assistances).FirstOrDefaultAsync(m => m.Id == id);
             
             return View(meeting.Assistances);
@@ -82,7 +82,7 @@ namespace OnChurch.Web.Controllers
                         Assistances = model.Assistances
                     };
                     User user = await _userHelper.GetMemberAsync(User.Identity.Name);
-                    List<User> users = await _context.Users.Where(u => u.Church.Id == user.Church.Id).ToListAsync();
+                    List<User> users = await _context.Users.Where(u => u.Church.Id == user.Church.Id && u.UserType != Common.Enum.UserType.Teacher).ToListAsync();
                     users.ForEach(user =>
                     {
                         meeting.Assistances.Add(new Assistance

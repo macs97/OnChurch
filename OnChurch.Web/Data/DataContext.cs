@@ -47,6 +47,18 @@ namespace OnChurch.Web.Data
                 church.HasOne(c => c.Section).WithMany(d => d.Churches).OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<Meeting>(meeting =>
+            {
+                meeting.HasIndex("Id").IsUnique();
+                meeting.HasMany(m => m.Assistances).WithOne(m => m.Meeting).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Assistance>(assistance =>
+            {
+                assistance.HasIndex("Id").IsUnique();
+                assistance.HasOne(a => a.User).WithMany(a => a.Assistances).OnDelete(DeleteBehavior.Cascade);
+            });
+
         }
     }
 }
