@@ -31,8 +31,8 @@ namespace OnChurch.Prism
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
             containerRegistry.Register<IApiService, ApiService>();
             containerRegistry.RegisterForNavigation<NavigationPage>();
-            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<MeetingsPage, MeetingsPageViewModel>();
+            containerRegistry.RegisterForNavigation<AssistancesPage, AssistancesPageViewModel>();
         }
     }
 }

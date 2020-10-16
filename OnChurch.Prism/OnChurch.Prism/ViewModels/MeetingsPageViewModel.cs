@@ -1,6 +1,7 @@
 ﻿using OnChurch.Common.Models;
 using OnChurch.Common.Responses;
 using OnChurch.Common.Services;
+using OnChurch.Prism.ItemViewModels;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -14,14 +15,17 @@ namespace OnChurch.Prism.ViewModels
 {
     public class MeetingsPageViewModel : ViewModelBase
     {
+        private readonly INavigationService _navigationService;
         private readonly IApiService _apiService;
-        private ObservableCollection<Meeting> _meetings;
+        private ObservableCollection<AssistanceItemViewModel> _meetings;
+        private List<Meeting> _myMeetings;
         private bool _isRunning;
 
         public MeetingsPageViewModel(INavigationService navigationService, IApiService apiService)
             :base(navigationService)
         {
             Title = "Meetings";
+            _navigationService = navigationService;
             _apiService = apiService;
             LoadMeetingsAsync();
         }
@@ -32,7 +36,7 @@ namespace OnChurch.Prism.ViewModels
             set => SetProperty(ref _isRunning, value); 
         }
 
-        public ObservableCollection<Meeting> Meetings
+        public ObservableCollection<AssistanceItemViewModel> Meetings
         {
             get => _meetings;
             set => SetProperty(ref _meetings, value);
@@ -54,8 +58,20 @@ namespace OnChurch.Prism.ViewModels
                 return;
             }
 
-            var myMeetings = (List<Meeting>)response.Result;
-            Meetings = new ObservableCollection<Meeting>(myMeetings);
+            _myMeetings = (List<Meeting>)response.Result;
+            ShowAssistances();
+        }
+
+        private void ShowAssistances()
+        {
+            Meetings = new ObservableCollection<AssistanceItemViewModel>(_myMeetings.Select(m => new AssistanceItemViewModel(_navigationService)
+            {
+                Id = m.Id,
+                Date = m.Date,
+                Church = m.Church,
+                Assistances = m.Assistances,
+            })
+                .ToList());
         }
     }
 }

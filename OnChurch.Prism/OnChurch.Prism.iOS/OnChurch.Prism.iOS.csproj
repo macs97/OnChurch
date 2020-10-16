@@ -198,6 +198,9 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Syncfusion.Xamarin.Buttons">
+      <Version>18.3.0.40</Version>
+    </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator">
       <Version>18.3.0.40</Version>
     </PackageReference>

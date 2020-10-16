@@ -2,21 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
-             prism:ViewModelLocator.AutowireViewModel="True"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
-             x:Class="OnChurch.Prism.Views.MeetingsPage"
+             xmlns:syncfusion="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="OnChurch.Prism.Views.AssistancesPage"
              Title="{Binding Title}">
 
-    <AbsoluteLayout>
-        <StackLayout Padding="5" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
-        <CollectionView ItemsSource="{Binding Meetings}">
+    <StackLayout Padding="5">
+        <CollectionView ItemsSource="{Binding Assistances}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding SelectAssistanceCommand}"></TapGestureRecognizer>
-                        </Grid.GestureRecognizers>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -24,34 +20,24 @@
                         </Grid.ColumnDefinitions>
                         <ffimageloading:CachedImage Grid.Column="0"
                                                     Aspect="AspectFill"
-                                                    Source="{Binding PhotoFullPath}"
+                                                    Source="{Binding User.PhotoFullPath}"
                                                     CacheDuration="50"
                                                     Margin="5"
                                                     RetryCount="3"
                                                     RetryDelay="600"
                                                     WidthRequest="100"/>
                         <StackLayout Grid.Column="1">
-                            <Label Text="{Binding Date}"
+                            <Label Text="{Binding User.FullName}"
                                    FontAttributes="Bold"
                                    FontSize="Medium"
                                    LineBreakMode="TailTruncation"/>
                         </StackLayout>
-                        <Image Grid.Column="2"
-                               Source="ic_more_vert"/>
+                        <StackLayout Grid.Column="2">
+                            <syncfusion:SfCheckBox x:Name="checkBox" IsChecked="{Binding IsPresent}" Text=""/>
+                        </StackLayout>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
     </StackLayout>
-        <busyindicator:SfBusyIndicator AnimationType="Box"
-                                       AbsoluteLayout.LayoutBounds=".5,.5,.5,.5"
-                                       AbsoluteLayout.LayoutFlags="All"
-                                       HorizontalOptions="Center"
-                                       TextColor="Black"
-                                       IsBusy="{Binding IsRunning}"
-                                       Title="Loading"
-                                       VerticalOptions="Center"
-                                       ViewBoxHeight="80"
-                                       ViewBoxWidth="80"/>
-    </AbsoluteLayout>
 </ContentPage>
