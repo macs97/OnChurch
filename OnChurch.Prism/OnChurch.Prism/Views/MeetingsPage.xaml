@@ -4,10 +4,12 @@
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
              x:Class="OnChurch.Prism.Views.MeetingsPage"
              Title="{Binding Title}">
 
-    <StackLayout Padding="5">
+    <AbsoluteLayout>
+        <StackLayout Padding="5" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
         <CollectionView ItemsSource="{Binding Meetings}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -38,4 +40,15 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
     </StackLayout>
+        <busyindicator:SfBusyIndicator AnimationType="Box"
+                                       AbsoluteLayout.LayoutBounds=".5,.5,.5,.5"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalOptions="Center"
+                                       TextColor="Black"
+                                       IsBusy="{Binding IsRunning}"
+                                       Title="Loading"
+                                       VerticalOptions="Center"
+                                       ViewBoxHeight="80"
+                                       ViewBoxWidth="80"/>
+    </AbsoluteLayout>
 </ContentPage>
