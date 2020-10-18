@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:i18n="clr-namespace:OnChurch.Prism.Helpers"
              x:Class="OnChurch.Prism.Views.MeetingsPage"
-             Title="{Binding Title}">
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource ColorBackground}">
 
     <AbsoluteLayout>
         <StackLayout Padding="5" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
@@ -22,23 +23,15 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ffimageloading:CachedImage Grid.Column="0"
-                                                    Aspect="AspectFill"
-                                                    Source="{Binding PhotoFullPath}"
-                                                    CacheDuration="50"
-                                                    Margin="5"
-                                                    RetryCount="3"
-                                                    RetryDelay="600"
-                                                    WidthRequest="100"/>
                         <StackLayout Grid.Column="1">
                             <Label Text="{Binding Date}"
-                                   FontAttributes="Bold"
-                                   FontSize="Medium"
-                                   LineBreakMode="TailTruncation"/>
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                LineBreakMode="TailTruncation"/>
                         </StackLayout>
                         <Image Grid.Column="2"
-                               Source="ic_more_vert"/>
-                    </Grid>
+                            Source="ic_more_vert"/>
+                        </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -47,9 +40,9 @@
                                        AbsoluteLayout.LayoutBounds=".5,.5,.5,.5"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalOptions="Center"
-                                       TextColor="Black"
+                                       TextColor="{StaticResource ColorFont}"
                                        IsBusy="{Binding IsRunning}"
-                                       Title="Loading"
+                                       Title="{i18n:Translate Loading}"
                                        VerticalOptions="Center"
                                        ViewBoxHeight="80"
                                        ViewBoxWidth="80"/>

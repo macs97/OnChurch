@@ -1,6 +1,7 @@
 ﻿using OnChurch.Common.Models;
 using OnChurch.Common.Responses;
 using OnChurch.Common.Services;
+using OnChurch.Prism.Helpers;
 using OnChurch.Prism.ItemViewModels;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -24,7 +25,7 @@ namespace OnChurch.Prism.ViewModels
         public MeetingsPageViewModel(INavigationService navigationService, IApiService apiService)
             :base(navigationService)
         {
-            Title = "Meetings";
+            Title = Languages.Meetings;
             _navigationService = navigationService;
             _apiService = apiService;
             LoadMeetingsAsync();
@@ -45,7 +46,7 @@ namespace OnChurch.Prism.ViewModels
         {
             if(Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Check the internet connection.", "Accept");
+                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.ConnectionError, Languages.Accept);
                 return;
             }
             IsRunning = true;
@@ -54,7 +55,7 @@ namespace OnChurch.Prism.ViewModels
             IsRunning = false;
             if(!response.IsSuccess)
             {
-                await App.Current.MainPage.DisplayAlert("Error", response.Message, "Accept");
+                await App.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
                 return;
             }
 
