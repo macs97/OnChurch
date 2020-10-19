@@ -31,6 +31,7 @@ namespace OnChurch.Common.Responses
         public UserType UserType { get; set; }
 
         public Church Church { get; set; }
+        public Profession Profession { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
 

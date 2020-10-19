@@ -1,4 +1,6 @@
-﻿using OnChurch.Common.Models;
+﻿using Newtonsoft.Json;
+using OnChurch.Common.Helpers;
+using OnChurch.Common.Models;
 using OnChurch.Common.Responses;
 using OnChurch.Common.Services;
 using OnChurch.Prism.Helpers;
@@ -50,8 +52,9 @@ namespace OnChurch.Prism.ViewModels
                 return;
             }
             IsRunning = true;
+            TokenResponse token = JsonConvert.DeserializeObject<TokenResponse>(Settings.Token);
             string url = App.Current.Resources["UrlAPI"].ToString();
-            Response response = await _apiService.GetListAsync<Meeting>(url, "/api", "/Meeting");
+            Response response = await _apiService.GetMeetingAsync(url, "/api", "/Meetings", token.Token);
             IsRunning = false;
             if(!response.IsSuccess)
             {

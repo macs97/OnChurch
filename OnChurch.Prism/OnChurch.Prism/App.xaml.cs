@@ -24,7 +24,7 @@ namespace OnChurch.Prism
 
             InitializeComponent();
            
-            await NavigationService.NavigateAsync($"{nameof(OnChurchDetailPage)}/NavigationPage/{nameof(MeetingsPage)}");
+            await NavigationService.NavigateAsync($"{nameof(OnChurchDetailPage)}/NavigationPage/{nameof(LoginPage)}");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -32,6 +32,7 @@ namespace OnChurch.Prism
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
             containerRegistry.Register<IApiService, ApiService>();
             containerRegistry.Register<IRegexHelper, RegexHelper>();
+            containerRegistry.Register<IFilesHelper, FilesHelper>();
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MeetingsPage, MeetingsPageViewModel>();
             containerRegistry.RegisterForNavigation<AssistancesPage, AssistancesPageViewModel>();
@@ -40,6 +41,9 @@ namespace OnChurch.Prism
             containerRegistry.RegisterForNavigation<ModifyUserPage, ModifyUserPageViewModel>();
             containerRegistry.RegisterForNavigation<ShowMembersChurch, ShowMembersChurchViewModel>();
             containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
+            containerRegistry.RegisterForNavigation<RecoverPasswordPage, RecoverPasswordPageViewModel>();
+            containerRegistry.RegisterForNavigation<ChangePasswordPage, ChangePasswordPageViewModel>();
+            containerRegistry.RegisterForNavigation<MembersPage, MembersPageViewModel>();
         }
     }
 }

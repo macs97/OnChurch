@@ -19,21 +19,29 @@ namespace OnChurch.Prism.ViewModels
     {
         private readonly INavigationService _navigationService;
         private UserResponse _user;
+        private static OnChurchDetailPageViewModel _instance;
 
         public OnChurchDetailPageViewModel(INavigationService navigationService) 
             : base(navigationService)
         {
+            _instance = this;
             _navigationService = navigationService;
             LoadMenus();
             LoadUser();
         }
+
+        public static OnChurchDetailPageViewModel GetInstance()
+        {
+            return _instance;
+        }
+
 
         public UserResponse User
         {
             get => _user;
             set => SetProperty(ref _user, value);
         }
-        private void LoadUser()
+        public void LoadUser()
         {
             if (Settings.IsLogin)
             {
@@ -52,7 +60,7 @@ namespace OnChurch.Prism.ViewModels
             new Menu
             {
                 Icon = "ic_members",
-                PageName = $"{nameof(ShowMembersChurch)}",
+                PageName = $"{nameof(MembersPage)}",
                 Title = Languages.Members
             },
             new Menu

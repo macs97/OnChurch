@@ -45,8 +45,8 @@ namespace OnChurch.Web.Controllers.API
 
             List<Meeting> meeting = await _context.Meetings
                 .Include(m => m.Assistances)
-                .ThenInclude(a => a.User).ToListAsync();
-                //.Where(m => m.Church == user.Church).ToListAsync();
+                .ThenInclude(a => a.User)
+                .Where(m => m.Church == user.Church).ToListAsync();
             if (meeting == null)
             {
                 return NotFound();
