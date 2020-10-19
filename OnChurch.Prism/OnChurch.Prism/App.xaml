@@ -34,7 +34,7 @@
             <Style x:Key="DangerButton" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource ColorDanger}" />
             </Style>
-
+            <x:String x:Key="UrlNoImage">https://onchurchweb.azurewebsites.net/images/noimage.png</x:String>
         </ResourceDictionary>
 
   </Application.Resources>

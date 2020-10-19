@@ -1,4 +1,5 @@
 using OnChurch.Common.Services;
+using OnChurch.Prism.Helpers;
 using OnChurch.Prism.ViewModels;
 using OnChurch.Prism.Views;
 using Prism;
@@ -30,6 +31,7 @@ namespace OnChurch.Prism
         {
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
             containerRegistry.Register<IApiService, ApiService>();
+            containerRegistry.Register<IRegexHelper, RegexHelper>();
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MeetingsPage, MeetingsPageViewModel>();
             containerRegistry.RegisterForNavigation<AssistancesPage, AssistancesPageViewModel>();
@@ -37,6 +39,7 @@ namespace OnChurch.Prism
             containerRegistry.RegisterForNavigation<OnChurchDetailPage, OnChurchDetailPageViewModel>();
             containerRegistry.RegisterForNavigation<ModifyUserPage, ModifyUserPageViewModel>();
             containerRegistry.RegisterForNavigation<ShowMembersChurch, ShowMembersChurchViewModel>();
+            containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
         }
     }
 }

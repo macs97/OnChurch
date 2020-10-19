@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OnChurch.Common.Requests;
+using OnChurch.Common.Responses;
 using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
@@ -25,12 +27,12 @@ namespace OnChurch.Web.Controllers.API
             _userHelper = userHelper;
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         //[Route("GetMeetings")]
         public async Task<IActionResult> GetMeeting()
         {
-            /*string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return NotFound();
@@ -39,7 +41,7 @@ namespace OnChurch.Web.Controllers.API
             if (user == null)
             {
                 return NotFound();
-            }*/
+            }
 
             List<Meeting> meeting = await _context.Meetings
                 .Include(m => m.Assistances)
@@ -51,6 +53,59 @@ namespace OnChurch.Web.Controllers.API
             }
 
             return Ok(meeting); 
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("CreateMeeting")]
+        public async Task<IActionResult> CreateMeeting([FromBody] MeetingRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Bad request",
+                    Result = ModelState
+                });
+            }
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return BadRequest(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Error003"
+                });
+            }
+            User user = await _userHelper.GetMemberAsync(userId);
+            if (user == null)
+            {
+                return BadRequest(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Error003"
+                });
+            }
+            Meeting meeting = new Meeting
+            {
+                Date = request.Date,
+                Church = user.Church,
+                Assistances = new List<Assistance>()
+            };
+            List<User> users = await _context.Users.Where(u => u.Church.Id == user.Church.Id && u.UserType != Common.Enum.UserType.Teacher).ToListAsync();
+            users.ForEach(user =>
+            {
+                meeting.Assistances.Add(new Assistance
+                {
+                    Meeting = meeting,
+                    User = user
+                });
+            });
+            _context.Add(meeting);
+            await _context.SaveChangesAsync();
+            return Ok(new Response { IsSuccess = true });
         }
     }
 }
