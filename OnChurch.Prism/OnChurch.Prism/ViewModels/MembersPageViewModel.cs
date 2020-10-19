@@ -52,7 +52,7 @@ namespace OnChurch.Prism.ViewModels
             IsRunning = true;
             TokenResponse token = JsonConvert.DeserializeObject<TokenResponse>(Settings.Token);
             string url = App.Current.Resources["UrlAPI"].ToString();
-            Response response = await _apiService.GetMembersAsync(url, "/api", "/Members", token.Token);
+            Response response = await _apiService.GetMembersAsync(url, "/api", "/Members", token);
             IsRunning = false;
             if (!response.IsSuccess)
             {
