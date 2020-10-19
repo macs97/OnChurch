@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace OnChurch.Web.Controllers
 {
@@ -19,14 +20,16 @@ namespace OnChurch.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly ICombosHelper _combosHelper;
+        private readonly IFlashMessage _flashMessage;
         private readonly IUserHelper _userHelper;
 
-        public MembersController(DataContext context, IBlobHelper blobHelper, IConverterHelper converterHelper, IUserHelper userHelper, ICombosHelper combosHelper)
+        public MembersController(DataContext context, IBlobHelper blobHelper, IConverterHelper converterHelper, IUserHelper userHelper, ICombosHelper combosHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _blobHelper = blobHelper;
             _converterHelper = converterHelper;
             _combosHelper = combosHelper;
+            _flashMessage = flashMessage;
             _userHelper = userHelper;
         }
 
@@ -196,10 +199,11 @@ namespace OnChurch.Web.Controllers
             {
                 _context.Users.Remove(member);
                 await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Member was deleted");
             }
-            catch (Exception ex)
+            catch
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                _flashMessage.Danger("Member can't be deleted because it has related records.");
             }
 
             return RedirectToAction(nameof(Index));

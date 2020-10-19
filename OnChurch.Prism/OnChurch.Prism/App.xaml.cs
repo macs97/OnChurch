@@ -22,8 +22,8 @@ namespace OnChurch.Prism
             SyncfusionLicenseProvider.RegisterLicense("MzM2MjIyQDMxMzgyZTMzMmUzMG1aSkc4dEdSNFRPWmcxRnh2d21GWUFVNHV4ZEJUWThZcVFIM3hCMTd6eUU9");
 
             InitializeComponent();
-
-            await NavigationService.NavigateAsync("NavigationPage/MeetingsPage");
+           
+            await NavigationService.NavigateAsync($"{nameof(OnChurchDetailPage)}/NavigationPage/{nameof(MeetingsPage)}");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -33,6 +33,10 @@ namespace OnChurch.Prism
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MeetingsPage, MeetingsPageViewModel>();
             containerRegistry.RegisterForNavigation<AssistancesPage, AssistancesPageViewModel>();
+            containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
+            containerRegistry.RegisterForNavigation<OnChurchDetailPage, OnChurchDetailPageViewModel>();
+            containerRegistry.RegisterForNavigation<ModifyUserPage, ModifyUserPageViewModel>();
+            containerRegistry.RegisterForNavigation<ShowMembersChurch, ShowMembersChurchViewModel>();
         }
     }
 }

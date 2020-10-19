@@ -34,16 +34,16 @@ namespace OnChurch.Web.Controllers.API
         {
             if (ModelState.IsValid)
             {
-                User member = await _userHelper.GetMemberAsync(model.Username);
-                if (member != null)
+                User user = await _userHelper.GetMemberAsync(model.Username);
+                if (user != null)
                 {
-                    Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.ValidatePasswordAsync(member, model.Password);
+                    Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.ValidatePasswordAsync(user, model.Password);
 
                     if (result.Succeeded)
                     {
                         Claim[] claims = new[]
                         {
-                        new Claim(JwtRegisteredClaimNames.Sub, member.Email),
+                        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
 
@@ -59,7 +59,7 @@ namespace OnChurch.Web.Controllers.API
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
-                            member
+                            user
                         };
 
                         return Created(string.Empty, results);

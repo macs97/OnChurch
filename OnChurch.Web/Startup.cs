@@ -12,6 +12,7 @@ using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using OnChurch.Web.Helpers;
 using System.Text;
+using Vereyon.Web;
 
 namespace OnChurch.Web
 {
@@ -77,6 +78,7 @@ namespace OnChurch.Web
             services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddFlashMessage();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

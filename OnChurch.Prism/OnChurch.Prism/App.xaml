@@ -8,11 +8,11 @@
         <ResourceDictionary>
             <x:String x:Key="UrlAPI">https://onchurchweb.azurewebsites.net</x:String>
             <!-- Colors -->
-            <Color x:Key="ColorBackground">#F2E6D8</Color>
-            <Color x:Key="ColorPrimary">#024059</Color>
-            <Color x:Key="ColorSecondary">#BFAE99</Color>
-            <Color x:Key="ColorDanger">#A66B56</Color>
-            <Color x:Key="ColorAccent">#A66B56</Color>
+            <Color x:Key="ColorBackground">#F2BB9B</Color>
+            <Color x:Key="ColorPrimary">#3D3C40</Color>
+            <Color x:Key="ColorSecondary">#BF9780</Color>
+            <Color x:Key="ColorDanger">#BF544B</Color>
+            <Color x:Key="ColorAccent">#BF544B</Color>
             <Color x:Key="ColorFont">#0D0D0D</Color>
             <Color x:Key="ColorFontInverse">#D9D9D9</Color>
             <!-- Styles -->

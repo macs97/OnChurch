@@ -135,4 +135,46 @@
   <data name="Meetings" xml:space="preserve">
     <value>Reuniones</value>
   </data>
+  <data name="Login" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="ModifyUser" xml:space="preserve">
+    <value>Modificar usuario</value>
+  </data>
+  <data name="ShowMeetings" xml:space="preserve">
+    <value>Mostrar reuniones</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Miembros</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Correo electrónico</value>
+  </data>
+  <data name="EmailPlaceHolder" xml:space="preserve">
+    <value>Introduzca su dirección de correo electrónico</value>
+  </data>
+  <data name="EmailError" xml:space="preserve">
+    <value>Debes introducir una dirección de correo válida.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="PasswordPlaceHolder" xml:space="preserve">
+    <value>Escriba la contraseña</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrar nuevo usuario</value>
+  </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Correo electrónico o contraseña incorrectos</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="PasswordError" xml:space="preserve">
+    <value>Debe escribir una contraseña válida</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>¿Olvidó la contraseña?</value>
+  </data>
 </root>

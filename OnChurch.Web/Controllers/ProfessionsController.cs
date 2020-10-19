@@ -5,6 +5,7 @@ using OnChurch.Web.Data;
 using OnChurch.Web.Data.Entities;
 using System;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace OnChurch.Web.Controllers
 {
@@ -12,10 +13,11 @@ namespace OnChurch.Web.Controllers
     public class ProfessionsController : Controller
     {
         private readonly DataContext _context;
-
-        public ProfessionsController(DataContext context)
+        private readonly IFlashMessage _flashMessage;
+        public ProfessionsController(DataContext context, IFlashMessage flashMessage)
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -118,11 +120,11 @@ namespace OnChurch.Web.Controllers
                 return NotFound();
             }
 
-            Data.Entities.User member = await _context.Users
+            Data.Entities.User user = await _context.Users
                 .Include(m => m.Profession)
                 .FirstOrDefaultAsync(m => m.Profession.Id == id);
 
-            if (member == null)
+            if (user == null)
             {
                 Profession profession = await _context.Professions
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -135,16 +137,17 @@ namespace OnChurch.Web.Controllers
                 {
                     _context.Professions.Remove(profession);
                     await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Profession was deleted");
                 }
-                catch (Exception ex)
+                catch
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    _flashMessage.Danger("Profession can't be deleted because it has related records.");
                 }
             }
             else
             {
                 // TODO
-                ModelState.AddModelError(string.Empty, "This record have to one or more members asociated");
+                _flashMessage.Danger("Profession can't be deleted because it has related records.");
             }
 
 
